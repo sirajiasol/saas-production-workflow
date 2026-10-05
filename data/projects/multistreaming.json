@@ -2,10 +2,10 @@
   "slug": "multistreaming",
   "name": "MultiStreaming",
   "createdAt": "2026-10-05T15:42:03.393Z",
-  "updatedAt": "2026-10-05T15:42:17.692Z",
+  "updatedAt": "2026-10-05T15:42:19.728Z",
   "checks": {
     "p1-doc-a": true,
-    "p1-competitors": false,
+    "p1-competitors": true,
     "p1-doc-b-pages": false,
     "p1-doc-b-seo": false,
     "p1-keywords": false,
