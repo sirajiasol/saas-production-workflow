@@ -2,7 +2,7 @@
   "slug": "multistreaming",
   "name": "MultiStreaming",
   "createdAt": "2026-10-05T15:42:03.393Z",
-  "updatedAt": "2026-10-05T15:42:39.989Z",
+  "updatedAt": "2026-10-05T15:42:43.689Z",
   "checks": {
     "p1-doc-a": true,
     "p1-competitors": true,
@@ -13,7 +13,7 @@
     "p1-logo": true,
     "p1-theme-saas": true,
     "p1-inspo-niche": true,
-    "p1-handoff-links": false,
+    "p1-handoff-links": true,
     "p2-review-docs": false,
     "p2-justification": false,
     "p2-contract-brief": false,
