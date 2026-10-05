@@ -3,9 +3,9 @@
   "name": "REMS",
   "createdBy": "Farheen Zia",
   "createdAt": "2026-10-05T18:47:06.537Z",
-  "updatedAt": "2026-10-05T18:47:06.537Z",
+  "updatedAt": "2026-10-05T18:47:30.720Z",
   "checks": {
-    "p1-doc-a": false,
+    "p1-doc-a": true,
     "p1-competitors": false,
     "p1-doc-b-pages": false,
     "p1-doc-b-seo": false,
