@@ -36,6 +36,7 @@ module.exports = async function handler(req, res) {
             projects.push({
               slug: d.slug || slug,
               name: d.name || slug,
+              createdBy: d.createdBy || '',
               createdAt: d.createdAt,
               updatedAt: d.updatedAt,
               progress: Math.round((done / total) * 100),
@@ -66,11 +67,18 @@ module.exports = async function handler(req, res) {
       }
 
       const name = (body.name || '').trim();
+      const createdBy = (body.createdBy || body.userName || '').trim();
       if (!name || name.length < 2) {
         return send(res, 400, { error: 'Project name is required (min 2 characters)' });
       }
       if (name.length > 80) {
         return send(res, 400, { error: 'Project name too long (max 80 characters)' });
+      }
+      if (!createdBy || createdBy.length < 2) {
+        return send(res, 400, { error: 'Your name is required (min 2 characters)' });
+      }
+      if (createdBy.length > 80) {
+        return send(res, 400, { error: 'User name too long (max 80 characters)' });
       }
 
       let slug = sanitizeSlug(body.slug || name);
@@ -96,6 +104,7 @@ module.exports = async function handler(req, res) {
       const project = {
         slug,
         name,
+        createdBy,
         createdAt: now,
         updatedAt: now,
         checks: emptyChecks(),

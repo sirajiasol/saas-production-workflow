@@ -25,6 +25,19 @@
     return 'badge badge-antigravity';
   }
 
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function promptForPhase(phaseId) {
+    if (!window.WORKFLOW || !WORKFLOW.prompts) return null;
+    return WORKFLOW.prompts.find((p) => p.phase === phaseId) || null;
+  }
+
   function renderRoles(container) {
     if (!container || !window.WORKFLOW) return;
     container.innerHTML = WORKFLOW.roles
@@ -51,27 +64,48 @@
       .join('');
   }
 
-  function renderPrompts(container) {
-    if (!container || !window.WORKFLOW) return;
-    container.innerHTML = WORKFLOW.prompts
-      .map(
-        (p, i) => `
-      <article class="prompt-card">
-        <div class="prompt-head">
-          <h3>${escapeHtml(p.title)}</h3>
-          <button type="button" class="copy-btn" data-prompt-index="${i}">Copy prompt</button>
-        </div>
-        <pre>${escapeHtml(p.template)}</pre>
-      </article>`
-      )
-      .join('');
+  function countProgress(checks, phase) {
+    const ids = phase.items.map((i) => i.id);
+    const done = ids.filter((id) => checks && checks[id]).length;
+    return { done, total: ids.length, pct: ids.length ? Math.round((done / ids.length) * 100) : 0 };
+  }
 
-    container.querySelectorAll('.copy-btn').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const idx = Number(btn.getAttribute('data-prompt-index'));
-        const text = WORKFLOW.prompts[idx].template;
+  function renderPhasePromptBlock(phase) {
+    const prompt = promptForPhase(phase.id);
+    if (!prompt) return '';
+    const pid = `phase-prompt-${phase.id}`;
+    return `
+      <div class="phase-prompt" data-phase-prompt="${phase.id}">
+        <button type="button" class="prompt-toggle" aria-expanded="false" aria-controls="${pid}">
+          <span>AI prompt template · Phase ${phase.id}</span>
+          <span class="chev" aria-hidden="true">▾</span>
+        </button>
+        <div class="prompt-panel" id="${pid}">
+          <div class="prompt-panel-head">
+            <p>Replace <code>[bracketed]</code> variables, then paste into your AI chat.</p>
+            <button type="button" class="copy-btn" data-phase="${phase.id}">Copy prompt</button>
+          </div>
+          <pre>${escapeHtml(prompt.template)}</pre>
+        </div>
+      </div>`;
+  }
+
+  function wirePhasePrompts(container) {
+    container.querySelectorAll('.phase-prompt .prompt-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const wrap = btn.closest('.phase-prompt');
+        const open = wrap.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+    container.querySelectorAll('.phase-prompt .copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const phaseId = Number(btn.getAttribute('data-phase'));
+        const prompt = promptForPhase(phaseId);
+        if (!prompt) return;
         try {
-          await navigator.clipboard.writeText(text);
+          await navigator.clipboard.writeText(prompt.template);
           btn.classList.add('copied');
           btn.textContent = 'Copied';
           setTimeout(() => {
@@ -85,17 +119,12 @@
     });
   }
 
-  function countProgress(checks, phase) {
-    const ids = phase.items.map((i) => i.id);
-    const done = ids.filter((id) => checks && checks[id]).length;
-    return { done, total: ids.length, pct: ids.length ? Math.round((done / ids.length) * 100) : 0 };
-  }
-
   function renderPhases(container, options) {
     if (!container || !window.WORKFLOW) return;
     const checks = (options && options.checks) || {};
     const interactive = !!(options && options.interactive);
     const onToggle = options && options.onToggle;
+    const prefix = interactive ? '' : 'master-';
 
     container.innerHTML = WORKFLOW.phases
       .map((phase) => {
@@ -103,13 +132,14 @@
         const items = phase.items
           .map((item) => {
             const checked = !!checks[item.id];
+            const id = prefix + item.id;
             const inputAttrs = interactive
-              ? `id="${item.id}" data-check-id="${item.id}" ${checked ? 'checked' : ''}`
-              : `id="master-${item.id}" disabled ${checked ? 'checked' : ''}`;
+              ? `id="${id}" data-check-id="${item.id}" ${checked ? 'checked' : ''}`
+              : `id="${id}" disabled ${checked ? 'checked' : ''} tabindex="-1"`;
             return `
             <li class="checkbox ${checked ? 'done' : ''}">
-              <input type="checkbox" ${inputAttrs} ${interactive ? '' : 'tabindex="-1"'} />
-              <label for="${interactive ? item.id : 'master-' + item.id}">${escapeHtml(item.label)}</label>
+              <input type="checkbox" ${inputAttrs} />
+              <label for="${id}">${escapeHtml(item.label)}</label>
             </li>`;
           })
           .join('');
@@ -131,10 +161,13 @@
           <div class="phase-body">
             <span class="checkpoint">Checkpoint: ${escapeHtml(phase.checkpoint)}</span>
             <ul class="checklist">${items}</ul>
+            ${renderPhasePromptBlock(phase)}
           </div>
         </article>`;
       })
       .join('');
+
+    wirePhasePrompts(container);
 
     if (interactive && typeof onToggle === 'function') {
       container.querySelectorAll('input[type="checkbox"][data-check-id]').forEach((input) => {
@@ -158,9 +191,10 @@
     return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
   }
 
-  function wireCopyModal(opts) {
+  function wireCopyModal() {
     const modal = document.getElementById('copyModal');
     const nameInput = document.getElementById('projectName');
+    const userInput = document.getElementById('userName');
     const slugPreview = document.getElementById('slugPreview');
     const errEl = document.getElementById('copyError');
     const confirmBtn = document.getElementById('confirmCopy');
@@ -170,6 +204,7 @@
     function open() {
       errEl.textContent = '';
       nameInput.value = '';
+      if (userInput) userInput.value = '';
       slugPreview.textContent = 'slug: —';
       modal.classList.add('open');
       nameInput.focus();
@@ -195,8 +230,13 @@
     async function create() {
       errEl.textContent = '';
       const name = nameInput.value.trim();
+      const createdBy = userInput ? userInput.value.trim() : '';
       if (name.length < 2) {
         errEl.textContent = 'Enter a project name (at least 2 characters).';
+        return;
+      }
+      if (!createdBy || createdBy.length < 2) {
+        errEl.textContent = 'Enter your name (at least 2 characters).';
         return;
       }
       confirmBtn.disabled = true;
@@ -205,15 +245,14 @@
         const res = await fetch('/api/projects', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name }),
+          body: JSON.stringify({ name, createdBy }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
           throw new Error(data.error || `Create failed (${res.status})`);
         }
-        const slug = data.project.slug;
         toast(`Created “${data.project.name}”`);
-        window.location.href = `/p/${slug}`;
+        window.location.href = `/p/${data.project.slug}`;
       } catch (e) {
         errEl.textContent = e.message || 'Could not create project';
         confirmBtn.disabled = false;
@@ -222,19 +261,14 @@
     }
 
     confirmBtn.addEventListener('click', create);
-    nameInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') create();
+    [nameInput, userInput].forEach((el) => {
+      if (!el) return;
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') create();
+      });
     });
 
     return { open, close };
-  }
-
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
   }
 
   window.WorkflowUI = {
@@ -243,7 +277,6 @@
     badgeClass,
     renderRoles,
     renderTips,
-    renderPrompts,
     renderPhases,
     overallProgress,
     wireCopyModal,

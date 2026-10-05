@@ -30,6 +30,7 @@
         <div>
           <p class="muted" style="margin:0 0 0.35rem;font-family:var(--mono);font-size:0.8rem" id="slugLabel">/p/…</p>
           <h1 id="projectTitle">Loading…</h1>
+          <p class="created-by" id="createdBy" hidden></p>
           <p class="lead" id="projectMeta">Shared checklists — Human and Grok can both check items; state persists for this URL.</p>
         </div>
         <div class="save-state" id="saveState" aria-live="polite"></div>
@@ -58,22 +59,12 @@
       <div class="section-head">
         <div>
           <h2>Phases &amp; checklists</h2>
-          <p>Check items off — they save automatically to the shared project.</p>
+          <p>Check items off — they save automatically. Phases 2–6 include AI prompt templates.</p>
         </div>
       </div>
       <div class="phase-list" id="phaseList">
         <div class="empty-state">Loading checklist…</div>
       </div>
-    </section>
-
-    <section class="section" id="prompts">
-      <div class="section-head">
-        <div>
-          <h2>AI phase prompts</h2>
-          <p>Copy-paste templates with <code>[bracketed]</code> variables for Phases 2–6.</p>
-        </div>
-      </div>
-      <div class="prompts" id="promptsList"></div>
     </section>
   </main>
 
@@ -91,6 +82,10 @@
         <label for="projectName">Project name</label>
         <input id="projectName" type="text" maxlength="80" placeholder="e.g. Acme Analytics" autocomplete="off" />
         <div class="hint" id="slugPreview">slug: —</div>
+      </div>
+      <div class="field">
+        <label for="userName">Your name</label>
+        <input id="userName" type="text" maxlength="80" placeholder="e.g. Noman Asghar" autocomplete="name" />
       </div>
       <div class="error-msg" id="copyError" aria-live="polite"></div>
       <div class="modal-actions">

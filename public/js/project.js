@@ -1,11 +1,11 @@
 (function () {
   const {
     renderTips,
-    renderPrompts,
     renderPhases,
     overallProgress,
     wireCopyModal,
     toast,
+    escapeHtml,
   } = window.WorkflowUI;
 
   function slugFromPath() {
@@ -21,7 +21,6 @@
   let pendingChecks = null;
 
   renderTips(document.getElementById('tipsGrid'));
-  renderPrompts(document.getElementById('promptsList'));
   wireCopyModal();
 
   const saveState = document.getElementById('saveState');
@@ -47,8 +46,16 @@
     document.title = `${project.name} — SaaS Production Workflow`;
     document.getElementById('projectTitle').textContent = project.name;
     document.getElementById('slugLabel').textContent = `/p/${project.slug}`;
+    const byEl = document.getElementById('createdBy');
+    if (project.createdBy) {
+      byEl.hidden = false;
+      byEl.innerHTML = `Created by <strong>${escapeHtml(project.createdBy)}</strong>`;
+    } else {
+      byEl.hidden = true;
+      byEl.textContent = '';
+    }
     document.getElementById('projectMeta').textContent =
-      'Shared checklists for Human & Grok. Changes save to this project URL.';
+      'Shared checklists for Human & Grok. Changes save to this project URL. Phase prompts are inside each phase card.';
     updateOverall(project.checks);
     renderPhases(document.getElementById('phaseList'), {
       checks: project.checks,

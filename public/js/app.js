@@ -1,11 +1,9 @@
 (function () {
-  const { renderRoles, renderTips, renderPrompts, renderPhases, wireCopyModal, toast, escapeHtml } =
-    window.WorkflowUI;
+  const { renderRoles, renderTips, renderPhases, wireCopyModal, toast, escapeHtml } = window.WorkflowUI;
 
-  renderRoles(document.getElementById('roles'));
+  renderRoles(document.getElementById('rolesGrid'));
   renderTips(document.getElementById('tipsGrid'));
   renderPhases(document.getElementById('phaseList'), { checks: {}, interactive: false });
-  renderPrompts(document.getElementById('promptsList'));
   wireCopyModal();
 
   async function loadProjects() {
@@ -22,15 +20,19 @@
         return;
       }
       grid.innerHTML = projects
-        .map(
-          (p) => `
+        .map((p) => {
+          const by = p.createdBy
+            ? `<div class="byline">Created by ${escapeHtml(p.createdBy)}</div>`
+            : '';
+          return `
         <a class="project-card" href="/p/${encodeURIComponent(p.slug)}" style="color:inherit;text-decoration:none">
           <h3>${escapeHtml(p.name)}</h3>
           <div class="slug">/p/${escapeHtml(p.slug)}</div>
+          ${by}
           <div class="progress-bar"><span style="width:${p.progress || 0}%"></span></div>
           <div class="muted" style="font-size:0.82rem">${p.done || 0}/${p.total || 0} checks · ${p.progress || 0}%</div>
-        </a>`
-        )
+        </a>`;
+        })
         .join('');
     } catch (e) {
       grid.innerHTML = `<div class="empty-state">${escapeHtml(e.message || 'Could not load projects')}</div>`;
