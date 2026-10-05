@@ -1,0 +1,9 @@
+{
+  "name": "saas-production-workflow",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live SaaS production workflow site with shared checklists — Human / Grok / Anti-Gravity",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

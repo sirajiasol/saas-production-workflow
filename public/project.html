@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project — SaaS Production Workflow</title>
+  <meta name="description" content="Shared SaaS production workflow checklist for this project." />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark">SP</span>
+        <span>
+          SaaS Production Workflow
+          <small>Project checklist</small>
+        </span>
+      </a>
+      <div class="header-actions">
+        <a class="btn btn-ghost" href="/#projects">All projects</a>
+        <button type="button" class="btn btn-primary" id="makeCopyBtn">Make a copy</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="project-title-row">
+        <div>
+          <p class="muted" style="margin:0 0 0.35rem;font-family:var(--mono);font-size:0.8rem" id="slugLabel">/p/…</p>
+          <h1 id="projectTitle">Loading…</h1>
+          <p class="lead" id="projectMeta">Shared checklists — Human and Grok can both check items; state persists for this URL.</p>
+        </div>
+        <div class="save-state" id="saveState" aria-live="polite"></div>
+      </div>
+      <div class="overall" id="overall" hidden>
+        <div>
+          <div class="muted" style="font-size:0.8rem">Overall progress</div>
+          <strong id="overallPct">0%</strong>
+          <span class="muted" id="overallCount"></span>
+        </div>
+        <div class="progress-bar" aria-hidden="true"><span id="overallBar"></span></div>
+      </div>
+    </section>
+
+    <section class="section" id="tips">
+      <div class="section-head">
+        <div>
+          <h2>Tips for this build</h2>
+          <p>Keep these visible while you work the phases.</p>
+        </div>
+      </div>
+      <div class="tips-grid" id="tipsGrid"></div>
+    </section>
+
+    <section class="section" id="phases">
+      <div class="section-head">
+        <div>
+          <h2>Phases &amp; checklists</h2>
+          <p>Check items off — they save automatically to the shared project.</p>
+        </div>
+      </div>
+      <div class="phase-list" id="phaseList">
+        <div class="empty-state">Loading checklist…</div>
+      </div>
+    </section>
+
+    <section class="section" id="prompts">
+      <div class="section-head">
+        <div>
+          <h2>AI phase prompts</h2>
+          <p>Copy-paste templates with <code>[bracketed]</code> variables for Phases 2–6.</p>
+        </div>
+      </div>
+      <div class="prompts" id="promptsList"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      Shared project page · persistence via GitHub Contents API · <a href="/">Back to master workflow</a>
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" id="copyModal" role="dialog" aria-modal="true" aria-labelledby="copyModalTitle">
+    <div class="modal">
+      <h2 id="copyModalTitle">Make a project copy</h2>
+      <p>Creates a new shared page at <code>/p/&lt;slug&gt;</code> with fresh checklists.</p>
+      <div class="field">
+        <label for="projectName">Project name</label>
+        <input id="projectName" type="text" maxlength="80" placeholder="e.g. Acme Analytics" autocomplete="off" />
+        <div class="hint" id="slugPreview">slug: —</div>
+      </div>
+      <div class="error-msg" id="copyError" aria-live="polite"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelCopy">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmCopy">Create project</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-toast" id="toast" role="status"></div>
+
+  <script src="/js/workflow-data.js"></script>
+  <script src="/js/shared-ui.js"></script>
+  <script src="/js/project.js"></script>
+</body>
+</html>

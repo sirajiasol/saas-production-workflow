@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SaaS Production Workflow — Human · Grok · Anti-Gravity</title>
+  <meta name="description" content="Six-phase SaaS production workflow with shared checklists for Human, Grok, and Anti-Gravity. Make a copy for each project." />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark">SP</span>
+        <span>
+          SaaS Production Workflow
+          <small>sirajiasol · Noman Asghar</small>
+        </span>
+      </a>
+      <nav class="nav-pills" aria-label="On this page">
+        <a href="#roles">Roles</a>
+        <a href="#tips">Tips</a>
+        <a href="#phases">Phases</a>
+        <a href="#prompts">Prompts</a>
+        <a href="#projects">Projects</a>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="btn btn-primary" id="makeCopyBtn">Make a copy</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <h1>From idea → live → ranking</h1>
+      <p class="lead">
+        A defined 6-phase SaaS production workflow. Human researches and approves,
+        Grok runs PM/SEO, Anti-Gravity codes. Make a copy for each project — checklists
+        persist so everyone works from the same page.
+      </p>
+      <div class="roles" id="roles" aria-label="Roles"></div>
+    </section>
+
+    <section class="section wrap" id="tips">
+      <div class="section-head">
+        <div>
+          <h2>Practical tips</h2>
+          <p>Keep handoffs clean and avoid the usual SaaS build traps.</p>
+        </div>
+      </div>
+      <div class="tips-grid" id="tipsGrid"></div>
+    </section>
+
+    <section class="section wrap" id="phases">
+      <div class="section-head">
+        <div>
+          <h2>Master workflow — 6 phases</h2>
+          <p>Reference checklist (read-only). Create a project copy to track progress.</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="makeCopyBtn2">Make a copy</button>
+      </div>
+      <div class="phase-list readonly" id="phaseList"></div>
+    </section>
+
+    <section class="section wrap" id="prompts">
+      <div class="section-head">
+        <div>
+          <h2>AI phase prompt templates</h2>
+          <p>Copy-paste for Phases 2–6. Replace <code>[bracketed]</code> variables.</p>
+        </div>
+      </div>
+      <div class="prompts" id="promptsList"></div>
+    </section>
+
+    <section class="section wrap" id="projects">
+      <div class="section-head">
+        <div>
+          <h2>Project copies</h2>
+          <p>Existing shared projects on this site.</p>
+        </div>
+        <button type="button" class="btn" id="refreshProjects">Refresh</button>
+      </div>
+      <div class="projects-grid" id="projectsGrid">
+        <div class="empty-state">Loading projects…</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      SaaS Production Workflow · Human / Grok / Anti-Gravity · Not for multistreamingplatform.com
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" id="copyModal" role="dialog" aria-modal="true" aria-labelledby="copyModalTitle">
+    <div class="modal">
+      <h2 id="copyModalTitle">Make a project copy</h2>
+      <p>Creates a new shared page at <code>/p/&lt;slug&gt;</code> with fresh checklists.</p>
+      <div class="field">
+        <label for="projectName">Project name</label>
+        <input id="projectName" type="text" maxlength="80" placeholder="e.g. Acme Analytics" autocomplete="off" />
+        <div class="hint" id="slugPreview">slug: —</div>
+      </div>
+      <div class="error-msg" id="copyError" aria-live="polite"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelCopy">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmCopy">Create project</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-toast" id="toast" role="status"></div>
+
+  <script src="/js/workflow-data.js"></script>
+  <script src="/js/shared-ui.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
