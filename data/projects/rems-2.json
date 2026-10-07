@@ -3,10 +3,10 @@
   "name": "Rems",
   "createdBy": "Sarim",
   "createdAt": "2026-10-07T16:10:52.133Z",
-  "updatedAt": "2026-10-07T16:11:08.710Z",
+  "updatedAt": "2026-10-07T16:11:10.373Z",
   "checks": {
     "p1-doc-a": true,
-    "p1-competitors": false,
+    "p1-competitors": true,
     "p1-doc-b-pages": false,
     "p1-doc-b-seo": false,
     "p1-keywords": false,
